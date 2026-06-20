@@ -25,11 +25,13 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends iproute2 \
     && rm -rf /var/lib/apt/lists/*
 
-	RUN useradd --no-create-home --shell /bin/false appuser \
+RUN useradd --no-create-home --shell /bin/false appuser \
     && mkdir /data \
     && chown appuser /app /data
+
 COPY --from=publish /app/publish .
 COPY --from=node-build /src/frontend/dist ./wwwroot/
+
 USER appuser
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
