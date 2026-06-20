@@ -20,7 +20,12 @@ RUN dotnet publish IpamService.csproj -c Release -o /app/publish --no-build
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
-RUN useradd --no-create-home --shell /bin/false appuser \
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+	RUN useradd --no-create-home --shell /bin/false appuser \
     && mkdir /data \
     && chown appuser /app /data
 COPY --from=publish /app/publish .
